@@ -20,6 +20,7 @@ angular.module('angular-svg-round-progress')
                     current:        "=",
                     max:            "=",
                     semi:           "=",
+                    fitted:         "=",
                     rounded:        "=",
                     clockwise:      "=",
                     radius:         "@",
@@ -43,9 +44,19 @@ angular.module('angular-svg-round-progress')
 
                         size = radius*2 + stroke;
 
+                        if (options.fitted) {
+                            element[0].setAttribute('viewBox', '0 0 ' + size + ' ' + (isSemicircle ? size/2 : size));
+                            element.css({
+                                "width":        "100%"
+                            });
+                        } else {
+                            element.css({
+                                "width":        size + "px",
+                                "height":       (isSemicircle ? size/2 : size) + "px"
+                            });
+                        }
+
                         element.css({
-                            "width":        size + "px",
-                            "height":       (isSemicircle ? size/2 : size) + "px",
                             "overflow":     "hidden" // on some browsers the background overflows, if in semicircle mode
                         });
 
@@ -118,7 +129,7 @@ angular.module('angular-svg-round-progress')
                         })();
                     };
 
-                    scope.$watchCollection('[current, max, semi, rounded, clockwise, radius, color, bgcolor, stroke, iterations]', function(newValue, oldValue, scope){
+                    scope.$watchCollection('[current, max, semi, fitted, rounded, clockwise, radius, color, bgcolor, stroke, iterations]', function(newValue, oldValue, scope){
 
                         // pretty much the same as angular.extend,
                         // but this skips undefined values and internal angular keys
